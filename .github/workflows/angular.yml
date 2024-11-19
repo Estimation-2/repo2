@@ -1,0 +1,51 @@
+name: Node3.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --prod
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - name: Install dependencies for headless Chrome
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget curl unzip
+        sudo apt-get install -y libx11-xcb1 libfontconfig libnss3 libasound2 libgbm1 \
+                              libxcomposite1 libxrandr2 libgdk-pixbuf2.0-0 libxtst6 \
+                              libgtk-3-0
+    - name: Run tests with headless Chrome
+      run: npm test -- --watch=false --browsers=ChromeHeadless --single-run
+      env:
+        DISPLAY: :99  # Optional: Ensure it's set to avoid display issues if necessary
