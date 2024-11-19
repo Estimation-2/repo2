@@ -46,6 +46,6 @@ jobs:
                               libxcomposite1 libxrandr2 libgdk-pixbuf2.0-0 libxtst6 \
                               libgtk-3-0
     - name: Run tests with headless Chrome
-      run: npm test -- --watch=false --browsers=ChromeHeadless --single-run
+      run: npm test -- --watch=false --browsers=ChromeHeadless
       env:
         DISPLAY: :99  # Optional: Ensure it's set to avoid display issues if necessary
