@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,7 +26,7 @@ jobs:
     - run: npm run build --prod
 
   test:
-
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -38,7 +37,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - name: Install dependencies for headless Chrome
+    - name: Install necessary dependencies for testing
       run: |
         sudo apt-get update
         sudo apt-get install -y wget curl unzip
@@ -48,4 +47,4 @@ jobs:
     - name: Run tests with headless Chrome
       run: npm test -- --watch=false --browsers=ChromeHeadless
       env:
-        DISPLAY: :99  # Optional: Ensure it's set to avoid display issues if necessary
+        DISPLAY: :99  # Ensure it's set to avoid display issues if necessary
