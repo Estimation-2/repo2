@@ -1,4 +1,4 @@
-name: Node3.js CI
+name: Node.js CI
 
 on:
   push:
@@ -12,13 +12,12 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]  # Start with only one version for simplicity
 
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6  # Upgraded setup-node action
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -32,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6  # Upgraded setup-node action
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -40,11 +39,14 @@ jobs:
     - name: Install necessary dependencies for testing
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget curl unzip
-        sudo apt-get install -y libx11-xcb1 libfontconfig libnss3 libasound2 libgbm1 \
-                              libxcomposite1 libxrandr2 libgdk-pixbuf2.0-0 libxtst6 \
-                              libgtk-3-0
+        sudo apt-get install -y \
+          wget curl unzip \
+          libx11-xcb1 libfontconfig libnss3 libasound2 libgbm1 \
+          libxcomposite1 libxrandr2 libgdk-pixbuf2.0-0 libxtst6 \
+          libgtk-3-0
+    - name: Print installed packages
+      run: dpkg -l  # Debugging step to print installed packages
     - name: Run tests with headless Chrome
       run: npm test -- --watch=false --browsers=ChromeHeadless
       env:
-        DISPLAY: :99  # Ensure it's set to avoid display issues if necessary
+        DISPLAY: :99  # Set display for headless testing
