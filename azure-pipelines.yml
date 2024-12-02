@@ -1,7 +1,5 @@
 # Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+# Build a general Node.js project with npm and run tests in headless mode.
 
 trigger:
 - main
@@ -15,10 +13,21 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
+# Install necessary dependencies for headless Chrome
+- script: |
+    apt-get update
+    apt-get install -y libnss3 libxss1 libappindicator1 libindicator7 libfontconfig1
+  displayName: 'Install dependencies for headless Chrome'
+
+# Install project dependencies and build the project
 - script: |
     npm install
     npm run build
   displayName: 'npm install and build'
 
-- script: npm test
-  displayName: 'Run Tests'
+# Run tests with headless Chrome
+- script: |
+    npm test
+  displayName: 'Run Tests in Headless Chrome'
+  env:
+    CHROME_BIN: "/usr/bin/google-chrome"
