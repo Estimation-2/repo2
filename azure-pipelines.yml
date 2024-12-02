@@ -1,5 +1,5 @@
 # Node.js
-# Build a general Node.js project with npm and run tests in headless mode.
+# Build a general Node.js project with npm and run tests in headless mode using xvfb.
 
 trigger:
 - main
@@ -13,11 +13,17 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-# Install necessary dependencies for headless Chrome with sudo
+# Install necessary dependencies for headless Chrome and xvfb
 - script: |
     sudo apt-get update
-    sudo apt-get install -y libnss3 libxss1 libappindicator1 libindicator7 libfontconfig1
-  displayName: 'Install dependencies for headless Chrome'
+    sudo apt-get install -y libnss3 libxss1 libappindicator1 libindicator7 libfontconfig1 xvfb
+  displayName: 'Install dependencies for headless Chrome and xvfb'
+
+# Start xvfb
+- script: |
+    export DISPLAY=:99
+    Xvfb :99 -screen 0 1920x1080x24 &
+  displayName: 'Start xvfb'
 
 # Install project dependencies and build the project
 - script: |
@@ -25,8 +31,9 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-# Run tests with headless Chrome
+# Run tests with headless Chrome using xvfb
 - script: |
+    export DISPLAY=:99
     npm test
   displayName: 'Run Tests in Headless Chrome'
   env:
