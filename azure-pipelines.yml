@@ -13,10 +13,10 @@ steps:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-# Install necessary dependencies for headless Chrome
+# Install necessary dependencies for headless Chrome with sudo
 - script: |
-    apt-get update
-    apt-get install -y libnss3 libxss1 libappindicator1 libindicator7 libfontconfig1
+    sudo apt-get update
+    sudo apt-get install -y libnss3 libxss1 libappindicator1 libindicator7 libfontconfig1
   displayName: 'Install dependencies for headless Chrome'
 
 # Install project dependencies and build the project
