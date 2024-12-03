@@ -1,6 +1,3 @@
-# Node.js
-# Build and test a Node.js project using npm, leveraging the provided scripts in package.json.
-
 trigger:
 - main
 
@@ -8,17 +5,20 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+# Step 1: Install Node.js
 - task: NodeTool@0
   inputs:
     versionSpec: '18.x'
   displayName: 'Install Node.js'
 
-# Install dependencies and build the project using the "build" script in package.json
-- script: |
-    npm install
-    npm run build
-  displayName: 'Install dependencies and build the project'
+# Step 2: Install Dependencies
+- script: npm install
+  displayName: 'Install Dependencies'
 
-# Run tests using the "test" script in package.json
-- script: npm run test
-  displayName: 'Run Tests'
+# Step 3: Build the Angular Project
+- script: npm run build -- --configuration production
+  displayName: 'Build Angular Project'
+
+# Step 4: Run Angular Tests
+- script: npm run test -- --watch=false --browsers=ChromeHeadless
+  displayName: 'Run Angular Tests'
