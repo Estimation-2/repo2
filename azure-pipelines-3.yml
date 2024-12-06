@@ -1,0 +1,14 @@
+trigger:
+- master
+
+pool:ubuntu-latest
+
+stages:
+  - stage: "Build"
+     displayName: " Build Stage" 
+
+  - stage: "Run"
+     displayName: " Run Stage"
+
+
+
