@@ -1,24 +1,17 @@
 trigger:
-- main
+- master
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-# Step 1: Install Node.js
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18.x'
-  displayName: 'Install Node.js'
+stages:
+  - stage: stageA
+    displayName: "This is stage A"
+    jobs:
+      - job: jobA
 
-# Step 2: Install Dependencies
-- script: npm install
-  displayName: 'Install Dependencies'
+  - stage: stageB
+    displayName: "This is stage B"
+    jobs:
+      -  job: jobB
 
-# Step 3: Build the Angular Project
-- script: npm run build -- --configuration production
-  displayName: 'Build Angular Project'
-
-# Step 4: Run Angular Tests
-- script: npm run test -- --watch=false --browsers=ChromeHeadless
-  displayName: 'Run Angular Tests'
