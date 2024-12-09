@@ -1,25 +1,38 @@
+# Azure DevOps Pipeline YAML for Angular Project
 
 trigger:
-- main
+  branches:
+    include:
+      - main # Adjust this to your branch name
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest' # Use 'windows-latest' if needed
 
-stages:
-  - stage: Build
-    jobs:
-      - job: BuildJob
-        steps:
-        - script: "ng build"
-        displayName: 'Building Stage'
-  
-  - stage: Test
-    jobs:
-      - job: TestJob
-        steps:
-          - script: "ng test"
-            displayName: 'Testing Stage'
-        
-          
-            
-               
+steps:
+# Use the correct Node.js version
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.x' # Adjust this to match your Node.js version
+  displayName: 'Use Node.js'
+
+# Install dependencies
+- script: |
+    npm ci
+  displayName: 'Install Node Modules'
+
+# Build the Angular project
+- script: |
+    npm run build
+  displayName: 'Build Angular Project'
+
+# Run Tests
+- script: |
+    npm run test -- --watch=false --browsers=ChromeHeadless
+  displayName: 'Run Tests'
+
+# Publish build artifacts (optional)
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: 'dist' # Ensure this matches your build output directory
+    artifactName: 'drop'
+  displayName: 'Publish Build Artifacts'
