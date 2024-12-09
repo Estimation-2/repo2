@@ -1,0 +1,15 @@
+ pool:
+  vmImage: 'ubuntu-latest'
+
+ stages:
+   - stage: QA
+     jobs:
+       - job : QAjob
+
+   - stage: Prod
+     jobs:
+       - job : Prodjob
+
+   - stage: Test
+     jobs:
+       - job : Testjob
