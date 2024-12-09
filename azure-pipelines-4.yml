@@ -7,9 +7,7 @@ trigger:
 - main
 
 pool:
-  name: 'Default'
-  demands:
-    - chrome
+  vmImage: ubuntu-latest
 
 
 steps:
