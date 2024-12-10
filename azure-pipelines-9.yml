@@ -19,7 +19,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/dist'
+    SourceFolder: '$(Build.SourcesDirectory)/dist/estimation-app'
     Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
