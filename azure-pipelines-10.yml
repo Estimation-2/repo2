@@ -1,0 +1,65 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+# Define Stages
+stages:
+
+# CI Stage: Build and Test
+- stage: CI
+  jobs:
+  - job: BuildJob
+    displayName: "Build Angular Project"
+    steps:
+
+    # Use Correct Node.js Version
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Use Node.js'
+
+    # Install Dependencies
+    - script: |
+        npm ci
+      displayName: 'Install Project Dependencies'
+
+    # Install Angular CLI Globally
+    - script: |
+        npm install -g @angular/cli
+      displayName: 'Install Angular CLI'
+
+    # Install Chrome Browser
+    - script: |
+        sudo apt-get update
+        sudo apt-get install -y libappindicator1 fonts-liberation
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
+      displayName: 'Install Chrome for Headless Tests'
+
+    # Build Angular Project
+    - script: |
+        npm run build -- --prod
+      displayName: 'Build Angular Project'
+
+    # Run Unit Tests
+    - script: |
+        npm run test -- --watch=false --browsers=ChromeHeadless
+      displayName: 'Run Unit Tests'
+
+# CD Stage: Deploy to Production
+- stage: Deploy
+  dependsOn: CI
+  condition: succeeded()  # Deploy only if CI succeeds
+  jobs:
+  - deployment: DeployApp
+    environment: 'Production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo "Deploying the app to Production"
+            displayName: 'Deploy the App'
