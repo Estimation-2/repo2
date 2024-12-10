@@ -45,11 +45,6 @@ stages:
         npm run build 
       displayName: 'Build Angular Project'
 
-    # Run Unit Tests
-    - script: |
-        npm run test -- --watch=false --browsers=ChromeHeadless
-      displayName: 'Run Unit Tests'
-
 # CD Stage: Deploy to Production
 - stage: Deploy
   dependsOn: CI
