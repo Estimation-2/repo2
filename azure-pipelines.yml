@@ -1,17 +1,50 @@
 trigger:
-- master
+  branches:
+    include:
+      - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
+# Define Pipeline Stages
 stages:
-  - stage: stageA
-    displayName: "This is stage A"
-    jobs:
-      - job: jobA
 
-  - stage: stageB
-    displayName: "This is stage B"
-    jobs:
-      -  job: jobB
+# Stage 1: Build
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.x'
+      displayName: 'Use Node.js'
 
+    - script: |
+        npm ci
+        npm run build
+      displayName: 'Build Angular Project'
+
+# Stage 2: Test
+- stage: Test
+  dependsOn: Build
+  condition: succeeded()  # Only run if Build succeeds
+  jobs:
+  - job: TestJob
+    steps:
+    - script: |
+        npm run test -- --watch=false --browsers=ChromeHeadless
+      displayName: 'Run Unit Tests'
+
+# Stage 3: Deploy
+- stage: Deploy
+  dependsOn: Test
+  condition: succeeded()  # Only run if Tests succeed
+  jobs:
+  - deployment: DeployApp
+    environment: 'Production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo "Deploying the App to Production"
+            displayName: 'Deploy to Production'
