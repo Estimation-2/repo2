@@ -42,7 +42,7 @@ stages:
 
     # Build Angular Project
     - script: |
-        npm run build -- --prod
+        npm run build 
       displayName: 'Build Angular Project'
 
     # Run Unit Tests
