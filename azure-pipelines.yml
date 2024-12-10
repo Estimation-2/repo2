@@ -21,6 +21,7 @@ stages:
 
     - script: |
         npm ci
+        npm install -g @angular/cli
         npm run build
       displayName: 'Build Angular Project'
 
@@ -32,7 +33,7 @@ stages:
   - job: TestJob
     steps:
     - script: |
-        npm run test -- --watch=false --browsers=ChromeHeadless
+        npx ng test --watch=false --browsers=ChromeHeadless
       displayName: 'Run Unit Tests'
 
 # Stage 3: Deploy
