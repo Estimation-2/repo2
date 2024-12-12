@@ -1,51 +1,15 @@
-trigger:
-  branches:
-    include:
-      - main
+- task: AngularCLI@1
+  inputs:
+    command: 'build'
+    DisableAnalytics: false
 
-pool:
-  vmImage: 'ubuntu-latest'
+- task: AngularCLI@1
+  inputs:
+    command: 'test'
+    DisableAnalytics: false
 
-# Define Pipeline Stages
-stages:
-
-# Stage 1: Build
-- stage: Build
-  jobs:
-  - job: BuildJob
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '18.x'
-      displayName: 'Use Node.js'
-
-    - script: |
-        npm ci
-        npm install -g @angular/cli
-        npm run build
-      displayName: 'Build Angular Project'
-
-# Stage 2: Test
-- stage: Test
-  dependsOn: Build
-  condition: succeeded()  # Only run if Build succeeds
-  jobs:
-  - job: TestJob
-    steps:
-    - script: |
-        npx ng test --watch=false --browsers=ChromeHeadless
-      displayName: 'Run Unit Tests'
-
-# Stage 3: Deploy
-- stage: Deploy
-  dependsOn: Test
-  condition: succeeded()  # Only run if Tests succeed
-  jobs:
-  - deployment: DeployApp
-    environment: 'Production'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - script: echo "Deploying the App to Production"
-            displayName: 'Deploy to Production'
+- task: AngularCLI@1
+  inputs:
+    command: 'custom'
+    verbose: true
+    DisableAnalytics: false
