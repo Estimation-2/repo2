@@ -23,10 +23,15 @@ steps:
   displayName: 'Build Angular Frontend'
 
 # Deploy to GitHub Pages
+- task: Checkout@1
+  inputs:
+    repository: https://github.com/Estimation-2/repo2.git
+    clean: true
+
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
-      git config --global user.name "Estimation-2"
-      git config --global user.email "veeranki.supriya@mphasis.com"
-      npx angular-cli-ghpages --dir=dist/estimation-app --no-silent
+      git add azure-pipelines.yml
+      git commit -m "Automated Deployment"
+      git push origin main
