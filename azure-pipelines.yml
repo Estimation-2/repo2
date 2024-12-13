@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - main  # Change this to your working branch
+      - main
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -10,28 +10,24 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-# Install Node.js and Angular CLI
+# Install Node.js and Build Angular Project
 - task: UseNode@1
   inputs:
     version: '18.x'
 
-# Install Angular Project Dependencies
 - script: |
     cd frontend
     npm install
     npm run build 
   displayName: 'Build Angular Frontend'
 
-# Deploy to GitHub Pages
-- task: Checkout@1
-  inputs:
-    repository: https://github.com/Estimation-2/repo2.git
-    clean: true
-
+# Deploy to GitHub Using HTTPS (With Token)
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
-      git add azure-pipelines.yml
-      git commit -m "Automated Deployment"
-      git push origin main
+      # Configure GitHub User
+      git config --global user.name "Estimation-2"
+      git config --global user.email "veeranki.supriya@mphasis.com"
+
+     
