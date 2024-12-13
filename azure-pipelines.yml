@@ -1,15 +1,32 @@
-- task: AngularCLI@1
-  inputs:
-    command: 'build'
-    DisableAnalytics: false
+trigger:
+  branches:
+    include:
+      - main  # Change this to your working branch
 
-- task: AngularCLI@1
-  inputs:
-    command: 'test'
-    DisableAnalytics: false
+pool:
+  vmImage: 'ubuntu-latest'
 
-- task: AngularCLI@1
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+# Install Node.js and Angular CLI
+- task: UseNode@1
   inputs:
-    command: 'custom'
-    verbose: true
-    DisableAnalytics: false
+    version: '18.x'
+
+# Install Angular Project Dependencies
+- script: |
+    cd frontend
+    npm install
+    npm run build 
+  displayName: 'Build Angular Frontend'
+
+# Deploy to GitHub Pages
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config --global user.name "Estimation-2"
+      git config --global user.email "veeranki.supriya@mphasis.com"
+      npx angular-cli-ghpages --dir=dist/estimation-app
