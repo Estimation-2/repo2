@@ -1,0 +1,33 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install -g @angular/cli
+    npm install
+    ng build --prod
+  displayName: 'npm install and build'
+
+# Publish Build Artifacts
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish Build Artifacts'
+
+# Deploy to Azure App Service
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'MyApp-AzureDeploymentConnection'  
+    appName: 'ASP-Estimationappgroup-9d87'  
+    package: '$(Build.ArtifactStagingDirectory)/drop'  
+  displayName: 'Deploy to Azure App Service'
