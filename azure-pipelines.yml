@@ -21,13 +21,5 @@ steps:
     npm run build 
   displayName: 'Build Angular Frontend'
 
-# Deploy to GitHub Using HTTPS (With Token)
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Configure GitHub User
-      git config --global user.name "Estimation-2"
-      git config --global user.email "veeranki.supriya@mphasis.com"
 
      
